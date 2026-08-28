@@ -27,6 +27,18 @@
     "rejected": 8,
     "outreachReady": 0
   },
+  "sender": {
+    "name": "Kyjahn Smith",
+    "email": "kypython@lamportlogic.com",
+    "source": "Apollo active default Gmail sending account",
+    "retrievedDate": "2026-08-28",
+    "confirmedByUserDirection": "It's all in Apollo"
+  },
+  "apolloSequence": {
+    "existingEffectProofSequenceFound": false,
+    "searchedDate": "2026-08-28",
+    "created": false
+  },
   "accounts": [
     {
       "rank": 1,
@@ -208,7 +220,7 @@
     "messagesSent": false,
     "socialPublished": false,
     "finalAudienceConfirmed": false,
-    "senderConfirmed": false
+    "senderConfirmed": true
   },
-  "nextAuthorizedAction": "Verify held accounts or request one additional Apollo company-search credit. Do not search for contacts until an account passes the qualification gate."
+  "nextAuthorizedAction": "Verify held accounts or request one additional Apollo company-search credit. The Apollo connector did not expose a saved meeting link, so the tracked discovery URL also remains required. Do not search for contacts until an account passes the qualification gate."
 }

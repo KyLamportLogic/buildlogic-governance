@@ -16,7 +16,11 @@ Every term is binary. Missing or ambiguous evidence is zero. An account must sat
 - 1 qualified: Zapier
 - 11 held for verification
 - 8 rejected
-- 0 outreach-ready because audience and sender confirmation remain locked
+- 0 outreach-ready because final audience confirmation remains locked
+
+## Sender resolved from Apollo
+
+Apollo has one active default sending account: **Kyjahn Smith** via `kypython@lamportlogic.com`. The user directed that the sender configuration be taken from Apollo, so the sender lock is satisfied. Apollo contained no existing EffectProof sequence, and the available connector did not expose a saved meeting link.
 
 Zapier passed the account-level gate because its first-party documentation says AI by Zapier can select app actions, including actions that create, update, or delete data, and can run without per-action approval when that optional control is disabled. This establishes the campaign's write-capable-agent trigger; it does not establish that a particular employee is the correct recipient.
 
@@ -24,11 +28,10 @@ Heron remains held: its first-party documentation establishes executable workflo
 
 ## Release boundary
 
-No contacts were created or enriched. No sequence was created, nobody was enrolled, no message was sent, and no social draft was published. Before any distribution, the user must confirm:
+No contacts were created or enriched. No sequence was created, nobody was enrolled, no message was sent, and no social draft was published. Before any distribution, the user must still confirm:
 
 1. The exact qualified account and person list.
-2. The sender name, address, and organization represented.
-3. The selected copy variant and tracked discovery link.
-4. That the stated trigger remains current at send time.
+2. The selected copy variant and tracked discovery link.
+3. That the stated trigger remains current at send time.
 
 Machine-readable evidence and all 20 dispositions are in `effectproof-apollo-account-batch-v1.json`.
