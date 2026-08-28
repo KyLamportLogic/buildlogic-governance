@@ -1,0 +1,80 @@
+{
+  "artifactId": "effectproof-discovery-v1",
+  "policyVersion": "2026-08-28.1",
+  "audienceSegments": [
+    "VP or Director of Engineering at a B2B SaaS company operating a production AI agent that can create or update external business records"
+  ],
+  "buyingSituation": "The team has recently given an AI agent write access to CRM, ticketing, email, billing, or deployment tools and cannot demonstrate what happens when a mutation commits but its acknowledgement is lost.",
+  "primaryActions": ["book a 30-minute qualified discovery call"],
+  "primaryMetric": "qualified discovery calls from verified trigger-backed accounts",
+  "dominantMessageJobs": ["overcoming inertia"],
+  "dominantEmotionalDrivers": ["confidence"],
+  "claims": [
+    {
+      "text": "EffectProof tests whether one durable intent produces the intended number of external effects through retries, lost acknowledgements, and recovery.",
+      "status": "verified",
+      "evidence": [
+        "effectproof/src/invariant.ts",
+        "effectproof/tests/critical-path.test.ts",
+        "effectproof/tests/fault-injection.test.ts"
+      ],
+      "limitations": ["Current downstream providers are simulated; a PASS does not prove a live vendor integration is safe."],
+      "alternativesAcknowledged": true,
+      "technicalPeerReview": true
+    },
+    {
+      "text": "EffectProof distinguishes a recovered idempotent retry from a duplicate mutation by inspecting authoritative simulated state.",
+      "status": "verified",
+      "evidence": [
+        "effectproof/src/engine/execution-engine.ts",
+        "effectproof/src/verifier/state-verifier.ts",
+        "effectproof/tests/critical-path.test.ts"
+      ],
+      "limitations": ["Authoritative inspection is adapter-dependent and currently uses in-process simulated stores."],
+      "alternativesAcknowledged": true,
+      "technicalPeerReview": true
+    }
+  ],
+  "ethics": {
+    "fakeScarcity": false,
+    "fakeSocialProof": false,
+    "fakeDecoys": false,
+    "hiddenTotalCost": false,
+    "coerciveFriction": false,
+    "obstructedExit": false
+  },
+  "experiment": {
+    "attributionPath": "utm_source=founder_outbound&utm_medium=email&utm_campaign=effectproof_discovery_v1",
+    "hypothesis": "A concrete commit-succeeds-ack-lost message sent only to verified write-capable-agent teams will produce at least 3 qualified replies from 20 independently triggered accounts.",
+    "changedVariables": ["problem-led email opening"],
+    "downstreamGuardrails": ["refund", "regret", "complaint", "trust"],
+    "killCriterion": "Stop and revise after 20 verified trigger-backed accounts if fewer than 3 qualified replies identify the problem as current and consequential. Do not increase volume based on sends, opens, or clicks."
+  },
+  "venture": {
+    "stage": "Release",
+    "scaleRequested": false,
+    "repeatableAcquisitionEvidence": [],
+    "repeatableConversionEvidence": []
+  },
+  "commercialProposal": {
+    "discovery": "$0 for a 30-minute problem interview; no credentials or production access",
+    "pilot": "$2,500 fixed-fee hypothesis for one sanitized workflow, one custom simulated scenario, and one evidence review",
+    "commitments": [
+      "No production credentials",
+      "No compliance certification or penetration-test claim",
+      "No promise that a simulated PASS proves a live integration",
+      "Scope and acceptance criteria agreed before paid work"
+    ]
+  },
+  "humanApproval": {
+    "claims": true,
+    "offer": true,
+    "pricing": true,
+    "commitments": true
+  },
+  "approvalEvidence": {
+    "recordedDate": "2026-08-28",
+    "scope": "EffectProof discovery v1 claims, offer, $2,500 pilot pricing hypothesis, and listed commitments",
+    "distributionAuthorized": false
+  }
+}
