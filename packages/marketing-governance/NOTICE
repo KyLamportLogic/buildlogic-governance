@@ -1,0 +1,6 @@
+BuildLogic Marketing Governance
+Copyright 2026 KyPython
+
+Canonical rule provenance is documented in README.md. The linked source documents
+remain subject to their respective ownership and terms; this package publishes only
+the deterministic rule interface and evaluator.
