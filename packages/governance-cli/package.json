@@ -1,0 +1,14 @@
+{
+  "name": "@kypython/buildlogic-governance-cli",
+  "version": "0.1.0",
+  "description": "CLI for deterministic governance contract validation",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": { "buildlogic-governance": "dist/index.js" },
+  "files": ["dist", "README.md", "LICENSE", "NOTICE"],
+  "publishConfig": { "access": "public", "provenance": true },
+  "scripts": { "build": "tsc", "type-check": "tsc --noEmit", "test": "pnpm build && node --test dist/index.test.js", "pack:check": "pnpm pack --pack-destination ../../.packs" },
+  "dependencies": { "@kypython/buildlogic-governance": "workspace:^" },
+  "devDependencies": { "@types/node": "22.19.13", "typescript": "5.9.3" }
+}

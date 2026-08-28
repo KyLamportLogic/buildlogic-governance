@@ -1,0 +1,19 @@
+{
+  "name": "@kypython/buildlogic-governance",
+  "version": "0.1.0",
+  "description": "Deterministic, fail-close governance for AI-triggered side effects",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE", "NOTICE"],
+  "exports": { ".": { "types": "./dist/index.d.ts", "require": "./dist/index.js", "default": "./dist/index.js" } },
+  "publishConfig": { "access": "public", "provenance": true },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "test": "jest --watchman=false",
+    "pack:check": "pnpm pack --pack-destination ../../.packs"
+  },
+  "dependencies": { "ioredis": "5.10.0", "zod": "3.25.76" },
+  "devDependencies": { "@types/jest": "29.5.14", "@types/node": "22.19.13", "jest": "29.7.0", "ts-jest": "29.4.6", "typescript": "5.9.3" }
+}

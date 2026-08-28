@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+*.tgz
+*.tsbuildinfo
+newrelic_agent.log
+.env*
+!.env.example

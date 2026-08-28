@@ -1,0 +1,27 @@
+{
+  "name": "@kypython/buildlogic-security",
+  "version": "0.1.0",
+  "description": "Distributed rate limiting, validation, headers, and secret-safe utilities",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE", "NOTICE"],
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "require": "./dist/index.js", "default": "./dist/index.js" },
+    "./rate-limit": { "types": "./dist/rate-limit.d.ts", "require": "./dist/rate-limit.js", "default": "./dist/rate-limit.js" },
+    "./user-rate-limit-runtime": { "types": "./dist/user-rate-limit-runtime.d.ts", "require": "./dist/user-rate-limit-runtime.js", "default": "./dist/user-rate-limit-runtime.js" },
+    "./headers": { "types": "./dist/headers.d.ts", "require": "./dist/headers.js", "default": "./dist/headers.js" },
+    "./secret": { "types": "./dist/secret.d.ts", "require": "./dist/secret.js", "default": "./dist/secret.js" }
+  },
+  "publishConfig": { "access": "public", "provenance": true },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "test": "jest --watchman=false",
+    "pack:check": "pnpm pack --pack-destination ../../.packs"
+  },
+  "dependencies": { "@upstash/redis": "1.37.0", "ioredis": "5.10.0", "zod": "4.3.6" },
+  "devDependencies": { "@types/jest": "30.0.0", "@types/node": "25.3.5", "jest": "30.2.0", "ts-jest": "29.4.6", "typescript": "5.9.3" },
+  "peerDependencies": { "next": ">=14.0.0" },
+  "peerDependenciesMeta": { "next": { "optional": true } }
+}
