@@ -5,14 +5,12 @@
  */
 
 export {
-  rateLimit,
-  createRateLimiter,
   RATE_LIMIT_ERRORS,
   checkRateLimit,
   checkUserRateLimit,
   resetUserRateLimitMemoryForTests,
   setUserRateLimitRedisForTests,
-} from './rate-limit';
+} from './user-rate-limit';
 export { 
   validateRequest, 
   sanitizeInput,
@@ -37,15 +35,11 @@ export type { ContentFingerprint } from './content-integrity';
 export { extractApiKey, parseApiKeys, verifyApiKey, timingSafeEqualStr } from './api-key-auth';
 export type { ApiKeyVerification } from './api-key-auth';
 
-// Security middleware for Next.js
-export { securityMiddleware, securityProfiles } from './middleware';
-
 // Re-export types
 export type {
-  RateLimitConfig,
   RateLimitResult,
   UserRateLimitOptions,
   UserRateLimitResult,
-} from './rate-limit';
+} from './user-rate-limit';
 export type { ValidationSchema, ValidationResult } from './validation';
 export type { SecurityHeadersConfig } from './headers';

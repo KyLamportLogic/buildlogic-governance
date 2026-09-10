@@ -4,12 +4,15 @@
   "version": "0.1.0",
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.30.3",
-  "engines": { "node": ">=22.23.2" },
+  "engines": { "node": ">=20" },
   "scripts": {
-    "build": "pnpm -r build",
+    "clean": "node scripts/clean-build-artifacts.cjs",
+    "build": "pnpm clean && pnpm -r build",
+    "audit:dependencies": "pnpm audit --audit-level moderate",
     "test": "pnpm -r --if-present test",
-    "type-check": "pnpm --filter @kypython/buildlogic-governance build && pnpm -r --if-present type-check",
-    "pack:check": "pnpm -r --if-present pack:check",
-    "verify": "pnpm type-check && pnpm test && pnpm build && pnpm pack:check"
+    "type-check": "pnpm -r build && pnpm -r --if-present type-check",
+    "pack:check": "pnpm clean && pnpm -r --if-present build && pnpm -r --if-present pack:check",
+    "pack:smoke": "node scripts/smoke-packed-packages.cjs",
+    "verify": "pnpm audit:dependencies && pnpm type-check && pnpm test && pnpm build && pnpm pack:check && pnpm pack:smoke"
   }
 }

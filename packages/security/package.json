@@ -3,15 +3,33 @@
   "version": "0.1.0",
   "description": "Distributed rate limiting, validation, headers, and secret-safe utilities",
   "license": "Apache-2.0",
+  "keywords": ["security", "rate-limit", "redis", "validation", "secret-redaction"],
+  "homepage": "https://github.com/KyLamportLogic/buildlogic-governance#readme",
+  "bugs": { "url": "https://github.com/KyLamportLogic/buildlogic-governance/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KyLamportLogic/buildlogic-governance.git",
+    "directory": "packages/security"
+  },
+  "engines": { "node": ">=20" },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist", "README.md", "LICENSE", "NOTICE"],
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "require": "./dist/index.js", "default": "./dist/index.js" },
-    "./rate-limit": { "types": "./dist/rate-limit.d.ts", "require": "./dist/rate-limit.js", "default": "./dist/rate-limit.js" },
-    "./user-rate-limit-runtime": { "types": "./dist/user-rate-limit-runtime.d.ts", "require": "./dist/user-rate-limit-runtime.js", "default": "./dist/user-rate-limit-runtime.js" },
-    "./headers": { "types": "./dist/headers.d.ts", "require": "./dist/headers.js", "default": "./dist/headers.js" },
-    "./secret": { "types": "./dist/secret.d.ts", "require": "./dist/secret.js", "default": "./dist/secret.js" }
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.js", "default": "./dist/index.js" },
+    "./next": { "types": "./dist/next.d.ts", "import": "./dist/next.js", "require": "./dist/next.js", "default": "./dist/next.js" },
+    "./rate-limit": { "types": "./dist/rate-limit.d.ts", "import": "./dist/rate-limit.js", "require": "./dist/rate-limit.js", "default": "./dist/rate-limit.js" },
+    "./user-rate-limit": { "types": "./dist/user-rate-limit.d.ts", "import": "./dist/user-rate-limit.js", "require": "./dist/user-rate-limit.js", "default": "./dist/user-rate-limit.js" },
+    "./user-rate-limit-runtime": { "types": "./dist/user-rate-limit-runtime.d.ts", "import": "./dist/user-rate-limit-runtime.js", "require": "./dist/user-rate-limit-runtime.js", "default": "./dist/user-rate-limit-runtime.js" },
+    "./user-rate-limit-edge": { "types": "./dist/user-rate-limit-edge.d.ts", "import": "./dist/user-rate-limit-edge.js", "default": "./dist/user-rate-limit-edge.js" },
+    "./express-rate-limit-store": { "types": "./dist/express-rate-limit-store.d.ts", "import": "./dist/express-rate-limit-store.js", "require": "./dist/express-rate-limit-store.js", "default": "./dist/express-rate-limit-store.js" },
+    "./headers": { "types": "./dist/headers.d.ts", "import": "./dist/headers.js", "require": "./dist/headers.js", "default": "./dist/headers.js" },
+    "./validation": { "types": "./dist/validation.d.ts", "import": "./dist/validation.js", "require": "./dist/validation.js", "default": "./dist/validation.js" },
+    "./sanitization": { "types": "./dist/sanitization.d.ts", "import": "./dist/sanitization.js", "require": "./dist/sanitization.js", "default": "./dist/sanitization.js" },
+    "./claim-check": { "types": "./dist/claim-check.d.ts", "import": "./dist/claim-check.js", "require": "./dist/claim-check.js", "default": "./dist/claim-check.js" },
+    "./content-integrity": { "types": "./dist/content-integrity.d.ts", "import": "./dist/content-integrity.js", "require": "./dist/content-integrity.js", "default": "./dist/content-integrity.js" },
+    "./api-key-auth": { "types": "./dist/api-key-auth.d.ts", "import": "./dist/api-key-auth.js", "require": "./dist/api-key-auth.js", "default": "./dist/api-key-auth.js" },
+    "./secret": { "types": "./dist/secret.d.ts", "import": "./dist/secret.js", "require": "./dist/secret.js", "default": "./dist/secret.js" }
   },
   "publishConfig": { "access": "public", "provenance": true },
   "scripts": {

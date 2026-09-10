@@ -1,7 +1,7 @@
 /**
  * Standing approvals — durable, time-bounded consent for automation side effects.
  *
- * Product contract (ZeroAPI RPA):
+ * Product contract:
  * - User approves once at workflow setup (acknowledgedRisk required).
  * - Approval sticks for that automationId + scopes until expiry/revoke.
  * - Reminders fire long before expiry so automations are not missed.

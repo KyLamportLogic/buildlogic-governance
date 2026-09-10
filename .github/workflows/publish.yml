@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: 22.23.2
           registry-url: https://registry.npmjs.org
+      - run: npm install --global npm@11.6.2 && npm --version
       - run: corepack enable && corepack prepare pnpm@10.30.3 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm verify
