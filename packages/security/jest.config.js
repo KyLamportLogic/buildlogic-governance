@@ -4,9 +4,6 @@ module.exports = {
   testEnvironment: "node",
   roots: ["<rootDir>/src"],
   testMatch: ["**/__tests__/**/*.test.ts", "**/__tests__/**/*.test.js"],
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "<rootDir>/src/__tests__/ensure-ai-api-keys.test.js",
-  ],
+  testPathIgnorePatterns: ["/node_modules/"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 };

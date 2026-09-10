@@ -1,0 +1,42 @@
+{
+  "name": "@kypython/buildlogic-mcp-governance",
+  "version": "0.1.0",
+  "description": "Stdio MCP server for fail-close AI preflight, kill, revive, and status controls",
+  "license": "Apache-2.0",
+  "keywords": ["mcp", "model-context-protocol", "ai-governance", "fail-close", "agent-security"],
+  "homepage": "https://github.com/KyLamportLogic/buildlogic-governance#readme",
+  "bugs": { "url": "https://github.com/KyLamportLogic/buildlogic-governance/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KyLamportLogic/buildlogic-governance.git",
+    "directory": "packages/mcp-server"
+  },
+  "engines": { "node": ">=20" },
+  "type": "module",
+  "bin": { "buildlogic-governance-mcp": "./dist/index.js" },
+  "files": ["dist", "README.md", "LICENSE", "NOTICE"],
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./server": { "types": "./dist/server.d.ts", "import": "./dist/server.js" }
+  },
+  "publishConfig": { "access": "public", "provenance": true },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest --watchman=false",
+    "type-check": "tsc --noEmit",
+    "pack:check": "pnpm pack --pack-destination ../../.packs"
+  },
+  "dependencies": {
+    "@kypython/buildlogic-governance": "workspace:^",
+    "@modelcontextprotocol/sdk": "1.27.1",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/jest": "29.5.14",
+    "@types/node": "22.19.13",
+    "jest": "29.7.0",
+    "ts-jest": "29.4.6",
+    "typescript": "5.9.3"
+  }
+}
