@@ -1,0 +1,16 @@
+---
+description: Human Skill Retention Gate — protected human capabilities require human-first + human-final judgment
+alwaysApply: true
+---
+
+# HUMAN_SKILL_RETENTION_GATE
+
+Read `HUMAN_SKILL_RETENTION_GATE.md` and `config/human-skill-retention.json` before substantive work.
+
+If the task materially exercises any protected capability, AI may assist mechanically but may not be the sole/final authority. Require the human first substantive pass and final judgment. Do not author the human attestation fields. If absent, return `BLOCKED — HUMAN SKILL REP REQUIRED` with the smallest required human action.
+
+Deterministic pass rule:
+
+`TaskGate = 1 if C = ∅ else min_{c∈C}(H_c * J_c * E_c * (1 - A_c))`
+
+PASS only at exactly `1`. Sub-agents inherit this rule and may not weaken it.
