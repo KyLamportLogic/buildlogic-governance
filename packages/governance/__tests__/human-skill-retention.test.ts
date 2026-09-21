@@ -3,6 +3,7 @@ import {
   assertHumanSkillRetention,
   evaluateHumanSkillRetention,
 } from "../src/humanSkillRetention";
+import type { HumanSkillEvidenceItem } from "../src/humanSkillRetention";
 
 describe("human skill retention gate", () => {
   it("passes when no protected capability is triggered", () => {
@@ -40,12 +41,14 @@ describe("human skill retention gate", () => {
     });
   });
 
-  it.each([
+  const failureCases: Array<[string, Partial<HumanSkillEvidenceItem>]> = [
     ["no human first pass", { humanFirstPass: false }],
     ["no human final judgment", { humanFinalJudgment: false }],
     ["no evidence", { evidenceRefs: [] }],
     ["AI final authority", { aiFinalAuthority: true }],
-  ])("fails closed for %s", (_label, override) => {
+  ];
+
+  it.each(failureCases)("fails closed for %s", (_label, override) => {
     const result = evaluateHumanSkillRetention(["critical-thinking-ambiguity"], [
       {
         skillId: "critical-thinking-ambiguity",
