@@ -1,0 +1,229 @@
+{
+  "marker": "HUMAN_SKILL_RETENTION_GATE",
+  "version": "1.0.0",
+  "semantics": "AI may assist mechanically but may not be sole/final authority for protected human capabilities.",
+  "formula": "TaskGate = 1 if C = ∅ else min_{c∈C}(H_c * J_c * E_c * (1 - A_c))",
+  "passCondition": "TaskGate = 1",
+  "variables": {
+    "H_c": "1 only if human first substantive pass occurred before decisive AI output",
+    "J_c": "1 only if human final judgment/grade/reconciliation/approval occurred",
+    "E_c": "1 only if concrete evidence reference exists",
+    "A_c": "1 if AI was sole/final authority; else 0"
+  },
+  "protectedCapabilities": [
+    {
+      "id": "data-entry-qa-regulated",
+      "name": "Data entry QA & data validation in regulated/audit-sensitive domains",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "reconciliation-common-formats",
+      "name": "Error detection & reconciliation across common data/file formats",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "ai-eval-task-authoring",
+      "name": "Task authoring for AI evaluation (benchmarking)",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "rubric-design",
+      "name": "Rubric design & grading criteria development",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "technical-evaluation-qa",
+      "name": "Technical evaluation/QA mindset (rubric-based grading, edge cases, documentation)",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "llm-output-evaluation",
+      "name": "LLM output evaluation & instruction-following assessment",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "analytical-discrepancy-detection",
+      "name": "Analytical review & discrepancy detection",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "structured-documentation",
+      "name": "Structured documentation & remote execution",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "actionable-feedback",
+      "name": "Actionable feedback & communication clarity",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "llm-comparative-evaluation",
+      "name": "LLM prompting & comparative evaluation (ChatGPT vs Claude)",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "remote-async-professional-english",
+      "name": "Remote async collaboration & professional written English",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "american-english-communication",
+      "name": "American English verbal & written communication (clear, structured feedback)",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "video-timestamping",
+      "name": "Advanced timestamping / event marking in video",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "video-annotation",
+      "name": "Video data annotation & labeling (short clips)",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "pattern-recognition",
+      "name": "Pattern Recognition",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "instruction-comprehension-collaboration",
+      "name": "English instruction comprehension & remote collaboration",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "bug-identification-reporting",
+      "name": "Technical Communication (Bug Identification & Reporting)",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "qa-attention-detail",
+      "name": "Quality assurance & attention to detail",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "written-verbal-collaboration",
+      "name": "Written & verbal communication (remote collaboration)",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "critical-thinking-ambiguity",
+      "name": "Critical thinking & ambiguity resolution",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "process-documentation-improvement",
+      "name": "Process documentation & continuous improvement",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "action-success-judgment",
+      "name": "Action Success Judgment",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    },
+    {
+      "id": "document-review-consistency",
+      "name": "Consistency in Document Review",
+      "humanFirstPassRequired": true,
+      "humanFinalJudgmentRequired": true,
+      "evidenceRequired": true,
+      "aiMayBeFinalAuthority": false,
+      "mechanicalAssistAllowed": true
+    }
+  ],
+  "blockedMessage": "BLOCKED — HUMAN SKILL REP REQUIRED",
+  "requiredSurfaces": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".github/copilot-instructions.md",
+    ".cursor/rules/human-skill-retention-gate.mdc"
+  ]
+}
