@@ -12,8 +12,9 @@
     "test": "pnpm -r --if-present test",
     "type-check": "pnpm --filter @kypython/buildlogic-governance build && pnpm -r --if-present type-check",
     "pack:check": "pnpm -r --if-present pack:check",
-    "verify": "pnpm type-check && pnpm test && pnpm run test:doctor && pnpm build && pnpm pack:check",
-    "test:doctor": "node --test test/engineering-doctor.test.mjs"
+    "verify": "pnpm run doctor && pnpm type-check && pnpm test && pnpm run test:doctor && pnpm build && pnpm pack:check",
+    "test:doctor": "node --test test/engineering-doctor.test.mjs",
+    "doctor": "node bin/engineering-doctor.mjs"
   },
   "bin": {
     "engineering-doctor": "bin/engineering-doctor.mjs"
