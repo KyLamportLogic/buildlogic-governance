@@ -206,8 +206,9 @@ function universalChecks(root, files, config, checks) {
 function requirementsChecks(root, files, config, checks) {
   const req = config.requirements;
   if (!req) return;
-  const sourceMatches = resolveFileSpecs(root, files, [req.source]);
-  const source = sourceMatches[0] || req.source;
+  const sourceSpecs = Array.isArray(req.source) ? req.source : [req.source];
+  const sourceMatches = resolveFileSpecs(root, files, sourceSpecs);
+  const source = sourceMatches[0] || sourceSpecs.find(Boolean);
   if (!source || !relExists(root, source)) {
     if (req.optional) {
       add(checks, 'requirements.source', true, { skipped: true, source: source || null });
@@ -254,8 +255,10 @@ function requirementsChecks(root, files, config, checks) {
 function formalChecks(root, files, config, checks) {
   const formal = config.formal;
   if (!formal) return;
-  const manifestPath = resolveFileSpecs(root, files, [formal.manifest])[0] || formal.manifest;
-  const modelPath = resolveFileSpecs(root, files, [formal.model])[0] || formal.model;
+  const manifestSpecs = Array.isArray(formal.manifest) ? formal.manifest : [formal.manifest];
+  const modelSpecs = Array.isArray(formal.model) ? formal.model : [formal.model];
+  const manifestPath = resolveFileSpecs(root, files, manifestSpecs)[0] || manifestSpecs.find(Boolean);
+  const modelPath = resolveFileSpecs(root, files, modelSpecs)[0] || modelSpecs.find(Boolean);
   const manifestExists = Boolean(manifestPath && relExists(root, manifestPath));
   const modelExists = Boolean(modelPath && relExists(root, modelPath));
 
