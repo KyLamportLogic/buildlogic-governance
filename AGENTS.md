@@ -14,9 +14,10 @@ Agents never merge, approve, or deploy their own work.
 ### Rules
 1. **Branch + PR only.** Never push to `main`. Work on a branch such as `feat/*`, `fix/*`, `chore/*`, `docs/*`, `ci/*`, `refactor/*`, or `governance/*`, then open a PR. Do not merge it, approve it, enable auto-merge, or trigger a deploy. Ky merges.
 2. **Fixed roles. Spec first: no spec, no code.** Every agent has one role, defined in `KyPython/ai-governance/roles.yml`. Ky owns that file, and the gate reads it in every repo.
-   - **Spec author: Kiro (`kiro-agent[bot]`) only**, with Ky as owner override. Kiro writes specs and requirements in **spec-only PRs**, and Ky reviews and merges them.
-   - **Coders** (Codex `chatgpt-codex-connector[bot]`, Cursor `cursor[bot]`, Copilot, Claude Code, Grok Bot, and any other coding agent) **implement existing specs only**.
-     - Coders never create, edit, or delete files under `specs/` or `.kiro/specs/`.
+   - **Spec author: Kiro (`kiro-agent[bot]`) only**, with Ky as owner override. Kiro writes specs and requirements in **spec-only PRs**, which Ky reviews and merges before any code is built from them.
+   - **Coders** (Kiro's own builders, Codex `chatgpt-codex-connector[bot]`, Cursor `cursor[bot]`, Copilot, Claude Code, Grok Bot, and any other coding agent) **implement existing specs only**.
+     - Coders cooperate. Each task in the spec's `tasks.md` goes to **one coder in its own PR**, and a **different agent reviews** that PR.
+     - Coders never create, edit, or delete files under `specs/` or `.kiro/specs/` in a code PR. That includes Kiro when it codes.
      - Before writing code, read the spec on `main`. If none exists, stop and ask Ky to have Kiro write it.
      - Requirement sentences are the requirement. Do not paraphrase, reword, or weaken them to fit the code. If one is wrong, stop and route it back to Kiro or Ky.
    - **Approver: Ky (@KyPython)** reviews and merges. Agents never merge.
