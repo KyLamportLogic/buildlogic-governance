@@ -1,0 +1,28 @@
+name: AI Governance
+
+# Calls the shared governance gate from KyPython/ai-governance.
+# Required status check on main: "ai-governance / verdict".
+# The reusable workflow is pinned to a commit SHA; bump it via a PR Ky approves.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-governance-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ai-governance:
+    uses: KyPython/ai-governance/.github/workflows/governance.yml@a03111bb4afb5128f9dc731fdcb4d384c8e60e42 # main
+    with:
+      node-version: "22"
+      # require-tests: true
+      # extra-command: "pnpm validate:all"
+      # require-issue-reference: false
+      # systems-thinking-contract: auto
