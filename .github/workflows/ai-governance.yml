@@ -17,7 +17,9 @@ permissions:
 
 concurrency:
   group: ai-governance-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  # Only new commits cancel an in-flight run; `edited` re-runs on the same SHA queue instead,
+  # so a cancelled run can never leave a failed verdict as the latest result.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
 
 jobs:
   ai-governance:
