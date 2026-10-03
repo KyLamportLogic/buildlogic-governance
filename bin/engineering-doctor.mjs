@@ -138,6 +138,19 @@ function readText(root, rel) {
   return fs.readFileSync(path.join(root, rel), 'utf8');
 }
 
+function resolveFileSpecs(root, files, specs = []) {
+  const out = [];
+  for (const spec of specs) {
+    if (!spec) continue;
+    if (/[?*]/.test(spec)) {
+      for (const file of files) if (matchesAny(file, [spec])) out.push(file);
+    } else if (relExists(root, spec)) {
+      out.push(spec);
+    }
+  }
+  return [...new Set(out)];
+}
+
 function universalChecks(root, files, config, checks) {
   const ignores = [...DEFAULT_IGNORES, ...(config.ignore || [])];
   const visible = files.filter((f) => !matchesAny(f, ignores));
@@ -190,11 +203,16 @@ function universalChecks(root, files, config, checks) {
   }
 }
 
-function requirementsChecks(root, config, checks) {
+function requirementsChecks(root, files, config, checks) {
   const req = config.requirements;
   if (!req) return;
-  const source = req.source;
+  const sourceMatches = resolveFileSpecs(root, files, [req.source]);
+  const source = sourceMatches[0] || req.source;
   if (!source || !relExists(root, source)) {
+    if (req.optional) {
+      add(checks, 'requirements.source', true, { skipped: true, source: source || null });
+      return;
+    }
     add(checks, 'requirements.source', false, source || null, 'Configure an existing requirements source file.');
     return;
   }
@@ -218,11 +236,10 @@ function requirementsChecks(root, config, checks) {
     add(checks, 'requirements.unique_rows', dupes.length === 0, dupes, 'Keep each requirement ID in exactly one requirement row.');
   }
 
-  const traceFiles = req.traceFiles || [];
-  if (traceFiles.length) {
-    const existingTraceTexts = traceFiles
-      .filter((f) => relExists(root, f))
-      .map((f) => ({ file: f, text: readText(root, f) }));
+  const traceSpecs = req.traceFiles || [];
+  if (traceSpecs.length) {
+    const traceFiles = resolveFileSpecs(root, files, traceSpecs);
+    const existingTraceTexts = traceFiles.map((f) => ({ file: f, text: readText(root, f) }));
     const missing = [...new Set(ids)].filter((id) => !existingTraceTexts.some((x) => x.text.includes(id)));
     add(
       checks,
@@ -234,15 +251,22 @@ function requirementsChecks(root, config, checks) {
   }
 }
 
-function formalChecks(root, config, checks) {
+function formalChecks(root, files, config, checks) {
   const formal = config.formal;
   if (!formal) return;
-  const manifestPath = formal.manifest;
-  const modelPath = formal.model;
+  const manifestPath = resolveFileSpecs(root, files, [formal.manifest])[0] || formal.manifest;
+  const modelPath = resolveFileSpecs(root, files, [formal.model])[0] || formal.model;
+  const manifestExists = Boolean(manifestPath && relExists(root, manifestPath));
+  const modelExists = Boolean(modelPath && relExists(root, modelPath));
+
+  if (formal.optional && !manifestExists && !modelExists) {
+    add(checks, 'formal.optional', true, { skipped: true, reason: 'no formal manifest/model present' });
+    return;
+  }
 
   let manifest = null;
   let manifestText = '';
-  if (!manifestPath || !relExists(root, manifestPath)) {
+  if (!manifestPath || !manifestExists) {
     add(checks, 'formal.manifest', false, manifestPath || null, 'Configure the durable formal manifest path.');
   } else {
     try {
@@ -254,7 +278,7 @@ function formalChecks(root, config, checks) {
     }
   }
 
-  const modelText = modelPath && relExists(root, modelPath) ? readText(root, modelPath) : '';
+  const modelText = modelExists ? readText(root, modelPath) : '';
   if (modelPath) add(checks, 'formal.model', modelText.length > 0, modelPath, 'Configure the existing TLA+/formal model path.');
 
   for (const state of formal.requiredStates || []) {
@@ -286,14 +310,14 @@ function formalChecks(root, config, checks) {
   }
 
   for (const binding of formal.traceBindings || []) {
-    const exists = relExists(root, binding.file);
-    const text = exists ? readText(root, binding.file) : '';
+    const matchedFiles = resolveFileSpecs(root, files, [binding.file]);
+    const text = matchedFiles.map((file) => readText(root, file)).join('\n');
     const missing = (binding.requirements || []).filter((id) => !text.includes(id));
     add(
       checks,
       `formal.trace:${binding.file}`,
-      exists && missing.length === 0,
-      { exists, missing_requirements: missing },
+      matchedFiles.length > 0 && missing.length === 0,
+      { matched_files: matchedFiles, missing_requirements: missing },
       'Identify the real requirement IDs in the invariant/audit test that enforces them.'
     );
   }
@@ -355,8 +379,8 @@ export function runDoctor({ root = findRepoRoot(), configPath = null } = {}) {
     'Add .engineering-doctor.json to opt in this repository and make expectations explicit.'
   );
   universalChecks(root, files, config, checks);
-  requirementsChecks(root, config, checks);
-  formalChecks(root, config, checks);
+  requirementsChecks(root, files, config, checks);
+  formalChecks(root, files, config, checks);
   purposeChecks(root, files, config, checks);
 
   const failed = checks.filter((c) => !c.ok);
