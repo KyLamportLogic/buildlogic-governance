@@ -19,11 +19,11 @@ This repository also ships a read-only `engineering-doctor` command for reposito
 Install directly from this repository:
 
 ```sh
-npm install -g github:KyLamportLogic/buildlogic-governance#main
+npm install -g https://github.com/KyLamportLogic/buildlogic-governance/archive/main.tar.gz
 engineering-doctor
 ```
 
-Each repository opts in with a checked-in `.engineering-doctor.json`. The command exits nonzero on every detected blocker and `--json` returns a machine-readable report for CI or coding agents.
+Each repository opts in with a checked-in `.engineering-doctor.json`. CI should pin an immutable commit tarball rather than a moving branch. The command exits nonzero on every detected blocker and `--json` returns a machine-readable report for CI or coding agents.
 
 Example:
 
