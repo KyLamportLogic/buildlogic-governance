@@ -4,12 +4,19 @@
   "version": "0.1.0",
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.30.3",
-  "engines": { "node": ">=22.23.2" },
+  "engines": {
+    "node": ">=22.23.2"
+  },
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r --if-present test",
     "type-check": "pnpm --filter @kypython/buildlogic-governance build && pnpm -r --if-present type-check",
     "pack:check": "pnpm -r --if-present pack:check",
-    "verify": "pnpm type-check && pnpm test && pnpm build && pnpm pack:check"
+    "verify": "pnpm run doctor && pnpm type-check && pnpm test && pnpm run test:doctor && pnpm build && pnpm pack:check",
+    "test:doctor": "node --test test/engineering-doctor.test.mjs",
+    "doctor": "node bin/engineering-doctor.mjs"
+  },
+  "bin": {
+    "engineering-doctor": "bin/engineering-doctor.mjs"
   }
 }
