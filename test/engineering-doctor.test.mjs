@@ -94,7 +94,7 @@ test('rejects substring-only FR-10 evidence for FR-1 in all three trace gates', 
     }
   });
   fs.writeFileSync(path.join(root, 'REQ.md'), '| ID | Subject |\n| --- | --- |\n| FR-1 | Guard dispatch |\n');
-  fs.writeFileSync(path.join(root, 'trace.test.mjs'), '// FR-10 is not FR-1\n');
+  fs.writeFileSync(path.join(root, 'trace.test.mjs'), '// FR-10 only\n');
   fs.writeFileSync(path.join(root, 'formal.json'), JSON.stringify({
     properties: [{ name: 'GuardedDispatch', kind: 'invariant', requirements: ['FR-10'] }]
   }));
