@@ -1,8 +1,8 @@
 /**
  * AI Governance Toll Booth — Fail-Close Circuit Breaker
  *
- * In-memory circuit breaker for the AI-action toll booth and for RPA
- * (Playwright/BeatLogic) execution pipelines. Three states:
+ * In-memory circuit breaker for the AI-action toll booth and browser
+ * automation execution pipelines. Three states:
  *   - closed:    normal operation; failures increment a counter
  *   - open:      all guards refused until `cooldownMs` elapses
  *   - half_open: a small number of probe guards are admitted; one success closes,
