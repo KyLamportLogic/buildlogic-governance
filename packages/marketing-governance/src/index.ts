@@ -76,7 +76,8 @@ export function evaluateMarketingArtifact(artifact: MarketingArtifact): Marketin
   const E = evidence && trust ? 1 : 0;
   if (!evidence) deny('MG_E_001');
   if (!trust) deny('MG_E_002');
-  const W = Object.values(artifact.ethics).every((v) => v === false) ? 1 : 0;
+  const ethicsKeys = ['fakeScarcity', 'fakeSocialProof', 'fakeDecoys', 'hiddenTotalCost', 'coerciveFriction', 'obstructedExit'] as const;
+  const W = ethicsKeys.every((k) => artifact.ethics[k] === false) ? 1 : 0;
   if (!W) deny('MG_W_001');
   const guards = new Set<string>(artifact.experiment.downstreamGuardrails);
   const experiment = nonEmpty(artifact.experiment.attributionPath) && nonEmpty(artifact.experiment.hypothesis)
@@ -90,7 +91,8 @@ export function evaluateMarketingArtifact(artifact: MarketingArtifact): Marketin
   const X = experiment && stage ? 1 : 0;
   if (!experiment) deny('MG_X_001');
   if (!stage) deny('MG_X_002');
-  const H = Object.values(artifact.humanApproval).every((v) => v === true) ? 1 : 0;
+  const approvalKeys = ['claims', 'offer', 'pricing', 'commitments'] as const;
+  const H = approvalKeys.every((k) => artifact.humanApproval[k] === true) ? 1 : 0;
   if (!H) deny('MG_H_001');
   const terms = { I, A, C, E, W, X, H } as MarketingDecision['terms'];
   const score = (100 * I * A * C * E * W * X * H) as 0 | 100;
