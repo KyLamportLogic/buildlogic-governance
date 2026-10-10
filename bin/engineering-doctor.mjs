@@ -22,6 +22,10 @@ function escapeRegExp(value) {
   return value.replace(/[.*+?^$\{\}()|[\]\\]/g, '\\$&');
 }
 
+function containsWholeRequirementId(text, id) {
+  return new RegExp(`(?:^|[^A-Za-z0-9_-])${escapeRegExp(id)}(?![A-Za-z0-9_-])`).test(text);
+}
+
 function globToRegExp(glob) {
   let out = '^';
   for (let i = 0; i < glob.length; i += 1) {
@@ -186,7 +190,7 @@ function universalChecks(root, files, config, checks) {
   }
 
   for (const scope of config.nonPlaceholderTestScopes || []) {
-    const scoped = visible.filter((f) => f.startsWith(scope.replace(/\/$/, '') + '/') && /\.test\.[cm]?[jt]s$/.test(f));
+    const scoped = visible.filter((f) => f.startsWith(scope.replace(/\/$/, '') + '/') && /\.test\.[cm]?[jt]s$/.test(f) && relExists(root, f));
     const bad = scoped.filter((f) => {
       const text = readText(root, f);
       const hasTest = /\b(?:test|it)\s*\(/.test(text);
@@ -241,7 +245,7 @@ function requirementsChecks(root, files, config, checks) {
   if (traceSpecs.length) {
     const traceFiles = resolveFileSpecs(root, files, traceSpecs);
     const existingTraceTexts = traceFiles.map((f) => ({ file: f, text: readText(root, f) }));
-    const missing = [...new Set(ids)].filter((id) => !existingTraceTexts.some((x) => x.text.includes(id)));
+    const missing = [...new Set(ids)].filter((id) => !existingTraceTexts.some((x) => containsWholeRequirementId(x.text, id)));
     add(
       checks,
       'requirements.acceptance_trace',
@@ -301,7 +305,7 @@ function formalChecks(root, files, config, checks) {
       const found = findNamedObject(manifest, property.name);
       const kindOk = found?.kind === 'invariant';
       const body = found ? JSON.stringify(found) : '';
-      const missingRequirements = (property.requirements || []).filter((id) => !body.includes(id));
+      const missingRequirements = (property.requirements || []).filter((id) => !containsWholeRequirementId(body, id));
       add(
         checks,
         `formal.property:${property.name}`,
@@ -315,7 +319,7 @@ function formalChecks(root, files, config, checks) {
   for (const binding of formal.traceBindings || []) {
     const matchedFiles = resolveFileSpecs(root, files, [binding.file]);
     const text = matchedFiles.map((file) => readText(root, file)).join('\n');
-    const missing = (binding.requirements || []).filter((id) => !text.includes(id));
+    const missing = (binding.requirements || []).filter((id) => !containsWholeRequirementId(text, id));
     add(
       checks,
       `formal.trace:${binding.file}`,
@@ -426,5 +430,12 @@ export function main(args = process.argv.slice(2)) {
   }
 }
 
-const invoked = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-if (invoked) process.exitCode = main();
+function isInvokedDirectly() {
+  if (!process.argv[1]) return false;
+  try {
+    return fs.realpathSync(process.argv[1]) === fs.realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+if (isInvokedDirectly()) process.exitCode = main();
