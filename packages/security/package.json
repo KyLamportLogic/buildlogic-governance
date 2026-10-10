@@ -21,7 +21,7 @@
     "pack:check": "pnpm pack --pack-destination ../../.packs"
   },
   "dependencies": { "@upstash/redis": "1.37.0", "ioredis": "5.10.0", "zod": "4.3.6" },
-  "devDependencies": { "@types/jest": "30.0.0", "@types/node": "25.3.5", "jest": "30.2.0", "ts-jest": "29.4.6", "typescript": "5.9.3" },
+  "devDependencies": { "@types/jest": "30.0.0", "@types/node": "25.3.5", "jest": "30.5.0", "ts-jest": "29.4.6", "typescript": "5.9.3" },
   "peerDependencies": { "next": ">=14.0.0" },
   "peerDependenciesMeta": { "next": { "optional": true } }
 }
