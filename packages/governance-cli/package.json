@@ -10,5 +10,5 @@
   "publishConfig": { "access": "public", "provenance": true },
   "scripts": { "build": "tsc", "type-check": "tsc --noEmit", "test": "pnpm build && node --test dist/index.test.js", "pack:check": "pnpm pack --pack-destination ../../.packs" },
   "dependencies": { "@kypython/buildlogic-governance": "workspace:^" },
-  "devDependencies": { "@types/node": "22.19.13", "typescript": "5.9.3" }
+  "devDependencies": { "@types/node": "26.4.0", "typescript": "5.9.3" }
 }
