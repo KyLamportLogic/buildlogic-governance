@@ -1,0 +1,49 @@
+# Reusable diff-hygiene gate — enforces minimal-diff discipline (group K).
+# Deterministic guards block merge; advisory heuristics are comment-only (REQ-K5).
+# Actions pinned to immutable commit SHAs; minimal explicit permissions.
+name: diff-hygiene
+
+on:
+  workflow_call:
+    inputs:
+      governance-ref:
+        type: string
+        default: "main"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout caller repo
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0 # need base..head for diff
+
+      - name: Checkout governance scripts
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          repository: KyLamportLogic/buildlogic-governance
+          ref: ${{ inputs.governance-ref }}
+          path: .governance
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22.23.2"
+
+      - name: Compute diff + manifest and evaluate
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_SHA" || true
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" || git diff --name-only HEAD~1 HEAD)
+          node .governance/specs/accessibility-enforcement/scripts/run-diff-hygiene.js \
+            --changed "$(echo "$CHANGED" | tr '\n' ',')" \
+            --base "$BASE_SHA" --head "$HEAD_SHA" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
