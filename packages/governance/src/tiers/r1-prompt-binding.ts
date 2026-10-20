@@ -139,10 +139,22 @@ export const PROMPT_INJECTION_PATTERNS: RegExp[] = [
   /disregard (?:your|the) (?:system )?(?:prompt|instructions|rules)/i,
   /you are now (?:a |an )?(?:DAN|unrestricted|evil|jailbroken)/i,
   /\[SYSTEM\]\s*override/i,
-  /<\|im_start\|>system\s*[\s\S]*ignore/i,
   /new instructions:\s*you must/i,
   /forget everything above/i,
 ];
+
+const CHAT_TEMPLATE_SYSTEM = "<|im_start|>system";
+
+/**
+ * Linear equivalent of `<|im_start|>system` … `ignore`.
+ * A spanning regex here is polynomial on long space runs.
+ */
+export function hasChatTemplateIgnore(input: string): boolean {
+  const lower = input.toLowerCase();
+  const at = lower.indexOf(CHAT_TEMPLATE_SYSTEM);
+  if (at < 0) return false;
+  return lower.indexOf("ignore", at + CHAT_TEMPLATE_SYSTEM.length) >= 0;
+}
 
 export interface PromptBindingEscalationResult {
   r1: PromptBindingVerifyResult;
@@ -161,6 +173,7 @@ export function isPromptInjectionDrift(
   if (mismatches.includes("system-prompt-drift")) return true;
   if (mismatches.includes("tools-drift")) return true;
   if (injectedSystemPrompt) {
+    if (hasChatTemplateIgnore(injectedSystemPrompt)) return true;
     for (const pattern of PROMPT_INJECTION_PATTERNS) {
       if (pattern.test(injectedSystemPrompt)) return true;
     }
