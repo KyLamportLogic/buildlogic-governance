@@ -33,7 +33,7 @@ import { createLogger, logger, LogContext } from '../index';
 
 // Mock Sentry to avoid actual Sentry calls during testing
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-jest.mock('@sentry/nextjs', () => ({
+jest.mock('@sentry/node', () => ({
   captureException: jest.fn(),
   logger: {
     debug: jest.fn(),
@@ -238,18 +238,18 @@ describe('@kypython/buildlogic-logger', () => {
 
     it('should handle version from environment', () => {
       // Test without version
-      delete process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;
-      delete process.env.VERCEL_GIT_COMMIT_SHA;
+      delete process.env.SOURCE_VERSION;
+      delete process.env.GIT_COMMIT_SHA;
       const logger1 = createLogger('no-version');
       expect(() => logger1.info('test')).not.toThrow();
       
       // Test with version
-      process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA = 'abc123';
+      process.env.SOURCE_VERSION = 'abc123';
       const logger2 = createLogger('with-version');
       expect(() => logger2.info('test')).not.toThrow();
       
       // Restore
-      delete process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;
+      delete process.env.SOURCE_VERSION;
     });
   });
 

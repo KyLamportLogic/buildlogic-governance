@@ -2,7 +2,7 @@
  * @kypython/buildlogic-logger - Unified structured logging
  *
  * Wraps Sentry.logger with optional New Relic support.
- * Provides consistent structured logging API across all apps.
+ * Provides a consistent structured logging API across Node.js services.
  *
  * Usage:
  *   import { logger } from '@kypython/buildlogic-logger';
@@ -22,6 +22,13 @@ interface NRAgent {
 }
 
 function getNR(): NRAgent | null {
+  const isConfigured = Boolean(
+    process.env.NEW_RELIC_APP_NAME ||
+      process.env.NEW_RELIC_LICENSE_KEY ||
+      process.env.NEW_RELIC_CONFIG_FILE
+  );
+  if (!isConfigured) return null;
+
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports -- optional peer dependency
     return require('newrelic') as NRAgent;
@@ -31,7 +38,7 @@ function getNR(): NRAgent | null {
 }
 
 // ---------------------------------------------------------------------------
-// Structured log entry format (matches EasyFlow standard)
+// Structured log entry format
 // ---------------------------------------------------------------------------
 export interface LogContext {
   [key: string]: unknown;
@@ -62,7 +69,7 @@ export interface Logger {
 // ---------------------------------------------------------------------------
 // Logger implementation
 // ---------------------------------------------------------------------------
-class EmpireLogger implements Logger {
+class StructuredLogger implements Logger {
   private readonly serviceName: string;
   private readonly nr: NRAgent | null;
 
@@ -81,7 +88,7 @@ class EmpireLogger implements Logger {
       enriched.environment = process.env.NODE_ENV;
     }
 
-    const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? process.env.VERCEL_GIT_COMMIT_SHA;
+    const commitSha = process.env.SOURCE_VERSION ?? process.env.GIT_COMMIT_SHA;
     if (typeof commitSha === 'string') {
       enriched.version = commitSha;
     }
@@ -235,11 +242,11 @@ const defaultServiceName = process.env.SERVICE_NAME ??
                            process.env.NEXT_PUBLIC_SERVICE_NAME ?? 
                            'buildlogic';
 
-export const logger = new EmpireLogger(defaultServiceName);
+export const logger = new StructuredLogger(defaultServiceName);
 
 // ---------------------------------------------------------------------------
 // Factory function to create logger for specific service
 // ---------------------------------------------------------------------------
 export function createLogger(serviceName: string): Logger {
-  return new EmpireLogger(serviceName);
+  return new StructuredLogger(serviceName);
 }
