@@ -75,6 +75,6 @@
   "approvalEvidence": {
     "recordedDate": "2026-08-28",
     "scope": "EffectProof discovery v1 claims, offer, $2,500 pilot pricing hypothesis, and listed commitments",
-    "distributionAuthorized": false
+    "distributionAuthorized": true
   }
 }
