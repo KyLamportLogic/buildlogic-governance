@@ -1,0 +1,226 @@
+{
+  "artifactId": "effectproof-apollo-account-batch-v1",
+  "campaignArtifactId": "effectproof-discovery-v1",
+  "status": "screened-not-authorized-for-distribution",
+  "generatedDate": "2026-08-28",
+  "source": {
+    "provider": "Apollo",
+    "conversationRef": "epmkt28a7",
+    "authorizedCreditsConsumed": 1,
+    "resultCount": 20,
+    "query": {
+      "keywordsAny": ["artificial intelligence", "AI agents", "workflow automation", "B2B SaaS"],
+      "employeeRanges": ["51-100", "101-200", "201-500", "501-1000"],
+      "organizationLocations": ["United States"]
+    }
+  },
+  "qualificationGate": {
+    "formula": "Qualified = ICP AND WriteCapableAgentEvidence AND CurrentTriggerEvidence AND FirstPartyEvidence",
+    "values": "Each term is binary. Missing or ambiguous evidence is 0 and fails closed.",
+    "requiredAudience": "VP or Director of Engineering responsible for a production AI agent that creates or updates records in external business systems",
+    "allowedStatuses": ["qualified", "verify", "rejected"],
+    "distributionRule": "Only qualified accounts may enter the final audience review. No account may be contacted until the user confirms the exact audience, sender identity, selected copy, and tracked link."
+  },
+  "summary": {
+    "qualified": 1,
+    "verify": 11,
+    "rejected": 8,
+    "outreachReady": 0
+  },
+  "sender": {
+    "name": "Kyjahn Smith",
+    "email": "kypython@lamportlogic.com",
+    "source": "Apollo active default Gmail sending account",
+    "retrievedDate": "2026-08-28",
+    "confirmedByUserDirection": "It's all in Apollo"
+  },
+  "apolloSequence": {
+    "existingEffectProofSequenceFound": false,
+    "searchedDate": "2026-08-28",
+    "created": false
+  },
+  "accounts": [
+    {
+      "rank": 1,
+      "name": "AI For Search",
+      "domain": "aiforleaders.com",
+      "apolloOrganizationId": "61dc6523021ea500f6ee4dca",
+      "status": "rejected",
+      "reason": "The returned identity does not establish a B2B SaaS engineering organization operating a write-capable production agent."
+    },
+    {
+      "rank": 2,
+      "name": "AI: Artificial Intelligence",
+      "domain": "justai-llc.com",
+      "apolloOrganizationId": "62eae68763759c00a3ca0da8",
+      "status": "rejected",
+      "reason": "Generic keyword match; no first-party evidence of the approved buying situation."
+    },
+    {
+      "rank": 3,
+      "name": "AI For Professionals",
+      "domain": null,
+      "apolloOrganizationId": "682d5ef5244219000140cf29",
+      "status": "rejected",
+      "reason": "No domain and no independently verifiable product or trigger evidence."
+    },
+    {
+      "rank": 4,
+      "name": "BrightEdge",
+      "domain": "brightedge.com",
+      "apolloOrganizationId": "54a116d469702d3ec0750c00",
+      "status": "verify",
+      "reason": "Potential AI SaaS fit, but the search result does not prove a production agent mutates external business records."
+    },
+    {
+      "rank": 5,
+      "name": "Hugging Face",
+      "domain": "huggingface.co",
+      "apolloOrganizationId": "5f48095e1924bc0001d03995",
+      "status": "verify",
+      "reason": "AI platform fit is plausible, but no current account-specific external-write trigger is documented."
+    },
+    {
+      "rank": 6,
+      "name": "Zapier",
+      "domain": "zapier.com",
+      "apolloAccountId": "68acb9482748b90001e267b4",
+      "apolloOrganizationId": "54a11e5469702d8ccc506701",
+      "status": "qualified",
+      "reason": "First-party documentation states that AI by Zapier can autonomously select app actions that create, update, or delete data and that approval is optional per tool.",
+      "firstPartyEvidence": [
+        "https://help.zapier.com/hc/en-us/articles/45863491098893-Add-tools-to-your-AI-by-Zapier-step",
+        "https://zapier.com/agents"
+      ],
+      "evidenceCheckedDate": "2026-08-28"
+    },
+    {
+      "rank": 7,
+      "name": "United States Artificial Intelligence Institute",
+      "domain": "usaii.org",
+      "apolloOrganizationId": "614d98420d345e00013f6b5d",
+      "status": "rejected",
+      "reason": "Education or certification organization, not the approved B2B SaaS production-agent buying situation."
+    },
+    {
+      "rank": 8,
+      "name": "Heron",
+      "domain": "herondata.io",
+      "apolloAccountId": "6a83ca3d58e89c0001bb2d89",
+      "apolloOrganizationId": "5f467f025ac4c500da5e1aa2",
+      "status": "verify",
+      "reason": "First-party API documentation proves executable workflows, but does not by itself prove an AI agent performs external mutations.",
+      "firstPartyEvidence": ["https://docs.herondata.io/api-reference/workflows/start-a-workflow-for-an-end-user"],
+      "evidenceCheckedDate": "2026-08-28"
+    },
+    {
+      "rank": 9,
+      "name": "TechCrunch",
+      "domain": "techcrunch.com",
+      "apolloOrganizationId": "5fcdc437d0a83e00bf4fb193",
+      "status": "rejected",
+      "reason": "Media company; keyword relevance is editorial rather than evidence of the buying situation."
+    },
+    {
+      "rank": 10,
+      "name": "TRACTIAN",
+      "domain": "tractian.com",
+      "apolloOrganizationId": "62570742963a52011256922c",
+      "status": "verify",
+      "reason": "Potential industrial AI fit, but no verified external-record mutation trigger is attached to this account."
+    },
+    {
+      "rank": 11,
+      "name": "Together AI",
+      "domain": "together.ai",
+      "apolloOrganizationId": "63883d85e176a800a350e053",
+      "status": "verify",
+      "reason": "AI infrastructure fit is plausible, but model hosting alone does not establish a write-capable production agent."
+    },
+    {
+      "rank": 12,
+      "name": "WIRED",
+      "domain": "wired.com",
+      "apolloOrganizationId": "5cb8e40df65125b6230f0896",
+      "status": "rejected",
+      "reason": "Media company; no evidence of the approved buying situation."
+    },
+    {
+      "rank": 13,
+      "name": "Fiverr",
+      "domain": "fiverr.com",
+      "apolloOrganizationId": "608ffe02efef33008d2501e6",
+      "status": "verify",
+      "reason": "B2B software adjacency is plausible, but the account lacks a verified write-capable-agent trigger."
+    },
+    {
+      "rank": 14,
+      "name": "Codecademy",
+      "domain": "codecademy.com",
+      "apolloAccountId": "68aca7e69b151b000167561b",
+      "apolloOrganizationId": "57c49ea2a6da98329fd8b9e0",
+      "status": "verify",
+      "reason": "Software company, but no first-party evidence currently connects it to the approved agent mutation scenario."
+    },
+    {
+      "rank": 15,
+      "name": "Stack Overflow",
+      "domain": "stackoverflow.com",
+      "apolloOrganizationId": "5a9e8dada6da98d9356ce2d8",
+      "status": "verify",
+      "reason": "Developer SaaS fit is plausible, but no current external-write agent trigger is documented."
+    },
+    {
+      "rank": 16,
+      "name": "Towards Data Science",
+      "domain": "towardsdatascience.com",
+      "apolloOrganizationId": "5a9f67dca6da98d97e8338a9",
+      "status": "rejected",
+      "reason": "Publication; topical relevance is not buyer qualification."
+    },
+    {
+      "rank": 17,
+      "name": "Applicantz",
+      "domain": "applicantz.com",
+      "apolloOrganizationId": "54a1203169702d8ed4301902",
+      "status": "verify",
+      "reason": "Potential workflow software fit, but no verified production-agent write trigger is documented."
+    },
+    {
+      "rank": 18,
+      "name": "Weekday (YC W21)",
+      "domain": "weekday.works",
+      "apolloOrganizationId": "60216e319bb02300e6cde527",
+      "status": "verify",
+      "reason": "Potential recruiting automation fit, but the exact external mutation and accountable engineering owner remain unverified."
+    },
+    {
+      "rank": 19,
+      "name": "Tax.Network",
+      "domain": "tax.network",
+      "apolloOrganizationId": "54a1271269702d979c124b00",
+      "status": "rejected",
+      "reason": "No first-party evidence of a write-capable production agent or the approved B2B SaaS buying situation."
+    },
+    {
+      "rank": 20,
+      "name": "CallHub",
+      "domain": "callhub.io",
+      "apolloAccountId": "68acb9482748b90001e267af",
+      "apolloOrganizationId": "5f478596fa7ea300013541e7",
+      "status": "verify",
+      "reason": "Communications automation is adjacent, but the result does not establish an AI agent that mutates external business records."
+    }
+  ],
+  "releaseLocks": {
+    "contactsCreated": false,
+    "peopleEnriched": false,
+    "sequenceCreated": false,
+    "contactsEnrolled": false,
+    "messagesSent": false,
+    "socialPublished": false,
+    "finalAudienceConfirmed": false,
+    "senderConfirmed": true
+  },
+  "nextAuthorizedAction": "Verify held accounts or request one additional Apollo company-search credit. The Apollo connector did not expose a saved meeting link, so the tracked discovery URL also remains required. Do not search for contacts until an account passes the qualification gate."
+}
