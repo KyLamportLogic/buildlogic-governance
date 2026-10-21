@@ -9,4 +9,7 @@ module.exports = {
     "<rootDir>/src/__tests__/ensure-ai-api-keys.test.js",
   ],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+  transform: {
+    "^.+\\.tsx?$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.jest.json" }],
+  },
 };

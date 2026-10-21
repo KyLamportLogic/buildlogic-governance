@@ -5,7 +5,6 @@
     "rootDir": "./src",
     "skipLibCheck": true,
     "module": "CommonJS",
-    "moduleResolution": "node",
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
     "types": ["node"],
