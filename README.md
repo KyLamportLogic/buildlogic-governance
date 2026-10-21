@@ -47,3 +47,7 @@ Example:
 ```
 
 The doctor is intentionally diagnostic. Any command that writes requirements, tests, formal artifacts, inventories, or learner solutions remains a separate explicit human-authorized action.
+
+## Human Skill Retention Gate
+
+The repository includes a portable **HUMAN_SKILL_RETENTION_GATE** policy for cases where a human wants AI assistance without surrendering the final judgment-bearing rep. The gate is binary and fail-closed: `TaskGate = 1 if C = ∅ else min_{c∈C}(H_c * J_c * E_c * (1 - A_c))`. See `HUMAN_SKILL_RETENTION_GATE.md`.

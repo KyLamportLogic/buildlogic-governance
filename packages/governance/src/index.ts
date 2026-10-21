@@ -19,6 +19,17 @@ export type {
   GateAiSideEffectResult,
 } from "./gateSideEffect";
 
+// Human skill retention gate
+export {
+  HUMAN_SKILL_RETENTION_BLOCKED,
+  evaluateHumanSkillRetention,
+  assertHumanSkillRetention,
+} from "./humanSkillRetention";
+export type {
+  HumanSkillEvidenceItem,
+  HumanSkillRetentionResult,
+} from "./humanSkillRetention";
+
 // Components
 export { checkKillSwitch, setKillSwitchForTesting, clearKillSwitchCache } from "./killSwitch";
 export * as hardwareGovernance from "./hardware";
