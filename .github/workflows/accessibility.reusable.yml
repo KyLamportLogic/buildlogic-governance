@@ -1,0 +1,99 @@
+# Reusable accessibility gate — WCAG 2.2 Level A.
+# Consumed per-repo via `uses:` (see specs/accessibility-enforcement/design.md).
+# Actions pinned to immutable commit SHAs; minimal explicit permissions (repo governance).
+name: accessibility-level-a
+
+on:
+  workflow_call:
+    inputs:
+      config-path:
+        type: string
+        default: ".a11y.yml"
+      exempt-path:
+        type: string
+        default: ".a11y-exempt.yml"
+      governance-ref:
+        description: "Ref/SHA of buildlogic-governance providing the gate scripts."
+        type: string
+        default: "main"
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  level-a:
+    runs-on: ubuntu-latest
+    steps:
+      # Caller repo checkout
+      - name: Checkout caller repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      # Governance repo supplies the deterministic gate scripts
+      - name: Checkout governance scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: KyLamportLogic/buildlogic-governance
+          ref: ${{ inputs.governance-ref }}
+          path: .governance
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22.23.2"
+
+      - name: Classify declaration (ui / no-ui / undeclared)
+        id: classify
+        run: |
+          node .governance/specs/accessibility-enforcement/scripts/run-a11y-gate.js \
+            --config "${{ inputs.config-path }}" \
+            --exempt "${{ inputs.exempt-path }}" \
+            --probe-only > probe.txt 2>&1 || true
+          cat probe.txt
+          # Determine if this is a UI repo that needs a build + scans.
+          if grep -q "declared no-UI" probe.txt; then echo "mode=no-ui" >> "$GITHUB_OUTPUT";
+          elif grep -q "undeclared" probe.txt; then echo "mode=undeclared" >> "$GITHUB_OUTPUT";
+          else echo "mode=ui" >> "$GITHUB_OUTPUT"; fi
+
+      # The following UI-only steps are gated by mode == ui.
+      - name: Build & start preview (UI only)
+        if: steps.classify.outputs.mode == 'ui'
+        run: |
+          BUILD=$(node -e "const{classifyA11yConfig}=require('./.governance/specs/accessibility-enforcement/scripts/a11y-eval.js');const fs=require('fs');const c=classifyA11yConfig(fs.readFileSync('${{ inputs.config-path }}','utf8'));process.stdout.write(c.config.build||'')")
+          PREVIEW=$(node -e "const{classifyA11yConfig}=require('./.governance/specs/accessibility-enforcement/scripts/a11y-eval.js');const fs=require('fs');const c=classifyA11yConfig(fs.readFileSync('${{ inputs.config-path }}','utf8'));process.stdout.write(c.config.preview||'')")
+          echo "Running build: $BUILD"
+          bash -lc "$BUILD"
+          echo "Starting preview: $PREVIEW"
+          bash -lc "$PREVIEW" &
+          sleep 5
+
+      - name: Run axe-core (UI only)
+        if: steps.classify.outputs.mode == 'ui'
+        run: |
+          URLS=$(node -e "const{classifyA11yConfig}=require('./.governance/specs/accessibility-enforcement/scripts/a11y-eval.js');const fs=require('fs');const c=classifyA11yConfig(fs.readFileSync('${{ inputs.config-path }}','utf8'));process.stdout.write((c.config.urls||[]).join(' '))")
+          echo "[]" > axe.json
+          for u in $URLS; do
+            npx --yes @axe-core/cli@4.10.1 "$u" --tags wcag2a,wcag22a --save axe-url.json || true
+            node -e "const a=require('./axe.json');const b=require('./axe-url.json');const v=(Array.isArray(b)?b:[b]).flatMap(r=>r.violations||[]);require('fs').writeFileSync('./axe.json',JSON.stringify(a.concat(v)))"
+          done
+
+      - name: Run Lighthouse CI (UI only)
+        if: steps.classify.outputs.mode == 'ui'
+        run: |
+          URLS=$(node -e "const{classifyA11yConfig}=require('./.governance/specs/accessibility-enforcement/scripts/a11y-eval.js');const fs=require('fs');const c=classifyA11yConfig(fs.readFileSync('${{ inputs.config-path }}','utf8'));process.stdout.write((c.config.urls||[])[0]||'')")
+          npx --yes @lhci/cli@0.15.1 collect --url="$URLS" --numberOfRuns=1 || true
+          SCORE=$(node -e "const fs=require('fs');try{const d=fs.readdirSync('.lighthouseci').filter(f=>f.endsWith('.json'));const r=JSON.parse(fs.readFileSync('.lighthouseci/'+d[0]));process.stdout.write(String(r.categories.accessibility.score))}catch(e){process.stdout.write('0')}")
+          echo "LH_SCORE=$SCORE" >> "$GITHUB_ENV"
+
+      - name: Evaluate gate (deterministic)
+        run: |
+          node .governance/specs/accessibility-enforcement/scripts/run-a11y-gate.js \
+            --config "${{ inputs.config-path }}" \
+            --exempt "${{ inputs.exempt-path }}" \
+            --axe axe.json \
+            --lighthouse "${LH_SCORE:-}" \
+            --github-summary "$GITHUB_STEP_SUMMARY"
