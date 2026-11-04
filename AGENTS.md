@@ -51,7 +51,7 @@ Agents never merge, approve, or deploy their own work.
 9. **No destructive commands without explicit human authorization.** This covers `git push --force`, `git reset --hard`, `git clean -fd`, `prisma migrate reset`, `supabase db reset`, `drop database`, `terraform destroy`, and `rm -rf /`.
 10. **Supply chain.** Pin third-party GitHub Actions to a full commit SHA. Every workflow declares a least-privilege `permissions:` block. Untrusted event data (PR title, body, branch name) goes through `env:` and is never spliced into `run:` scripts.
 11. **Human judgment stays human.** Do not invent users, traction, metrics, or personal facts. Stop and hand formative, consequential (irreversible), and authorship decisions to Ky.
-12. **Deploys follow governance.** Deploy jobs run only from `main` after CI/governance passed: `workflow_run` on success, same-repo `push` events only, never fork PR code with secrets.
+12. **Deploys follow governance.** Only Ky deploys, from main, after the repo’s required CI and governance verdict succeed for the exact deployed revision. Automated jobs use a successful workflow_run from a same-repository main push. An existing manual-only deployment remains manual-only and must enforce the same source/check conditions plus its protected human environment; agents never invoke it. Do not add an automatic deploy to a manual project or treat a check from another revision as approval.
 
 
 This public repository contains reusable governance, security, and logging packages. Keep it host-neutral, Apache-2.0 compatible, free of private LamportLogic history, and safe for public disclosure.
