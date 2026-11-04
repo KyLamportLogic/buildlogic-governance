@@ -11,6 +11,26 @@ Public, host-neutral TypeScript packages for deterministic AI side-effect govern
 
 All packages are Apache-2.0. Releases use npm trusted publishing and provenance. This repository has clean public history and contains no private LamportLogic history or application code.
 
+## Where this repo sits
+
+Two repos share the "governance" name. They are different layers, not duplicates:
+
+```text
+KyLamportLogic/buildlogic-governance        KyPython/ai-governance
+(this repo) runtime + shared checks         CI enforcement: the merge gate
+```
+
+This repo ships **public runtime governance**: npm packages, CLI, and repo
+hygiene that run inside shipped code. It does not decide merges. Merge
+decisions come from `KyPython/ai-governance` (policy/quality/security gates,
+roles, spec gate), which this repo consumes via its caller workflow
+(`.github/workflows/ai-governance.yml`).
+
+Rule of thumb: if outside consumers install it, it lives here. If it decides
+whether Ky's code merges, it lives in `KyPython/ai-governance`. Ky's private
+policy (roles, spec authorship, sweep) stays out of this repo so public
+releases never churn with it.
+
 
 ## Engineering doctor
 
