@@ -20,4 +20,5 @@ export function checkUserRateLimit(
 
 export function resetUserRateLimitMemoryForTests(): void;
 export function setUserRateLimitRedisForTests(client: null | { eval: Function }): void;
+export function setUserRateLimitUpstashForTests(client: undefined | null | { eval: Function }): void;
 export function memoryFallbackAllowed(): boolean;

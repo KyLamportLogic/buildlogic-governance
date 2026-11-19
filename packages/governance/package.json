@@ -3,10 +3,19 @@
   "version": "0.1.0",
   "description": "Deterministic, fail-close governance for AI-triggered side effects",
   "license": "Apache-2.0",
+  "keywords": ["ai-governance", "agent-governance", "fail-close", "audit", "llm"],
+  "homepage": "https://github.com/KyLamportLogic/buildlogic-governance#readme",
+  "bugs": { "url": "https://github.com/KyLamportLogic/buildlogic-governance/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KyLamportLogic/buildlogic-governance.git",
+    "directory": "packages/governance"
+  },
+  "engines": { "node": ">=20" },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist", "README.md", "LICENSE", "NOTICE"],
-  "exports": { ".": { "types": "./dist/index.d.ts", "require": "./dist/index.js", "default": "./dist/index.js" } },
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.js", "default": "./dist/index.js" } },
   "publishConfig": { "access": "public", "provenance": true },
   "scripts": {
     "build": "tsc",

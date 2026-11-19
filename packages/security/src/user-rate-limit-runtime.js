@@ -19,6 +19,10 @@ let redisOverride = null;
 /** @type {any} */
 let redisClient = null;
 let redisInitAttempted = false;
+/** @type {undefined | null | { eval: Function }} */
+let upstashOverride;
+/** @type {undefined | null | { eval: Function }} */
+let upstashClient;
 
 const FIXED_WINDOW_LUA = `
 local key = KEYS[1]
@@ -109,6 +113,11 @@ function setUserRateLimitRedisForTests(client) {
   }
 }
 
+function setUserRateLimitUpstashForTests(client) {
+  upstashOverride = client;
+  if (client === undefined) upstashClient = undefined;
+}
+
 /**
  * TCP Redis only (redis:// / rediss://). Never pass Upstash REST HTTPS to ioredis.
  * @returns {Promise<any|null>}
@@ -155,55 +164,45 @@ async function getTcpRedis() {
  * @param {number} windowSec
  * @param {number} max
  */
-async function tryUpstashRest(storageKey, windowSec, max) {
+function getUpstashRedis() {
+  if (upstashOverride !== undefined) return upstashOverride;
+  if (upstashClient !== undefined) return upstashClient;
+
   const base = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!nonEmptyString(base) || !nonEmptyString(token)) return null;
-
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  };
+  if (!nonEmptyString(base) || !nonEmptyString(token)) {
+    upstashClient = null;
+    return upstashClient;
+  }
 
   try {
-    const incrRes = await fetch(`${base.replace(/\/$/, '')}/incr/${encodeURIComponent(storageKey)}`, {
-      method: 'POST',
-      headers,
-    });
-    if (!incrRes.ok) return null;
-    const incrJson = await incrRes.json();
-    const count = Number(incrJson.result ?? incrJson);
-    if (!Number.isFinite(count)) return null;
+    // Official SDK; do not hand-roll Upstash REST calls.
+    const { Redis } = require('@upstash/redis');
+    upstashClient = new Redis({ url: base, token });
+    return upstashClient;
+  } catch {
+    upstashClient = null;
+    return upstashClient;
+  }
+}
 
-    if (count === 1) {
-      await fetch(
-        `${base.replace(/\/$/, '')}/expire/${encodeURIComponent(storageKey)}/${windowSec}`,
-        { method: 'POST', headers }
-      );
-    }
+async function tryUpstashSdk(storageKey, windowSec, max) {
+  const client = getUpstashRedis();
+  if (!client) return null;
 
-    let ttl = windowSec;
-    try {
-      const ttlRes = await fetch(`${base.replace(/\/$/, '')}/ttl/${encodeURIComponent(storageKey)}`, {
-        method: 'GET',
-        headers,
-      });
-      if (ttlRes.ok) {
-        const ttlJson = await ttlRes.json();
-        const t = Number(ttlJson.result ?? ttlJson);
-        if (Number.isFinite(t) && t > 0) ttl = t;
-      }
-    } catch {
-      /* keep windowSec */
-    }
-
-    const allowed = count <= max;
+  try {
+    const raw = await client.eval(
+      FIXED_WINDOW_LUA,
+      [storageKey],
+      [String(windowSec), String(max)]
+    );
+    const [allowed, remaining, ttl, count] = raw;
     return {
-      allowed,
-      remaining: Math.max(0, max - count),
-      resetAt: Date.now() + ttl * 1000,
+      allowed: Number(allowed) === 1,
+      remaining: Math.max(0, Number(remaining)),
+      resetAt: Date.now() + Math.max(0, Number(ttl)) * 1000,
       limit: max,
-      count,
+      count: Number(count),
       backend: /** @type {'redis'} */ ('redis'),
     };
   } catch {
@@ -282,7 +281,7 @@ async function checkUserRateLimit(key, opts = {}) {
     }
   }
 
-  const upstash = await tryUpstashRest(storageKey, windowSec, max);
+  const upstash = await tryUpstashSdk(storageKey, windowSec, max);
   if (upstash) return upstash;
 
   if (!memoryFallbackAllowed()) {
@@ -298,6 +297,7 @@ module.exports = {
   checkUserRateLimit,
   resetUserRateLimitMemoryForTests,
   setUserRateLimitRedisForTests,
+  setUserRateLimitUpstashForTests,
   memoryFallbackAllowed,
   FIXED_WINDOW_LUA,
 };

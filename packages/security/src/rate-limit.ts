@@ -7,24 +7,22 @@
 
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-
-// CJS runtime — works from Jest (CJS), Next, and Express via package export.
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const userRateLimitRuntime = require('./user-rate-limit-runtime.js') as {
-  checkUserRateLimit: (
-    key: string,
-    opts?: { windowMs?: number; max?: number; prefix?: string }
-  ) => Promise<{
-    allowed: boolean;
-    remaining: number;
-    resetAt: number;
-    limit: number;
-    count: number;
-    backend: 'redis' | 'memory';
-  }>;
-  resetUserRateLimitMemoryForTests: () => void;
-  setUserRateLimitRedisForTests: (client: unknown) => void;
-};
+import {
+  checkUserRateLimit,
+  RATE_LIMIT_ERRORS,
+} from './user-rate-limit';
+export {
+  checkRateLimit,
+  checkUserRateLimit,
+  RATE_LIMIT_ERRORS,
+  resetUserRateLimitMemoryForTests,
+  setUserRateLimitRedisForTests,
+} from './user-rate-limit';
+export type {
+  RateLimitResult,
+  UserRateLimitOptions,
+  UserRateLimitResult,
+} from './user-rate-limit';
 
 export interface RateLimitConfig {
   /** Time window in seconds */
@@ -41,78 +39,6 @@ export interface RateLimitConfig {
   skipSuccessfulRequests?: boolean;
   /** Skip failed requests from count */
   skipFailedRequests?: boolean;
-}
-
-export interface RateLimitResult {
-  success: boolean;
-  remaining: number;
-  reset: number;
-  total: number;
-}
-
-export interface UserRateLimitOptions {
-  /** Window length in milliseconds (default 60000) */
-  windowMs?: number;
-  /** Max requests per window (default 20) */
-  max?: number;
-  /** Key prefix for namespacing (default user-rl) */
-  prefix?: string;
-}
-
-export interface UserRateLimitResult {
-  allowed: boolean;
-  remaining: number;
-  resetAt: number;
-  limit: number;
-  count: number;
-  backend: 'redis' | 'memory';
-}
-
-export const RATE_LIMIT_ERRORS = {
-  REDIS_CONNECTION: 'Rate limiting unavailable - Redis connection failed',
-  INVALID_CONFIG: 'Invalid rate limit configuration',
-  MISSING_REQUEST: 'Request object is required',
-} as const;
-
-/**
- * One identity → one usage record (Redis when configured, else process Map).
- * Prefer this for AI agent / automation endpoints under multi-instance deploy.
- */
-export async function checkUserRateLimit(
-  key: string,
-  opts: UserRateLimitOptions = {}
-): Promise<UserRateLimitResult> {
-  return userRateLimitRuntime.checkUserRateLimit(key, opts);
-}
-
-export function resetUserRateLimitMemoryForTests(): void {
-  userRateLimitRuntime.resetUserRateLimitMemoryForTests();
-}
-
-export function setUserRateLimitRedisForTests(client: unknown): void {
-  userRateLimitRuntime.setUserRateLimitRedisForTests(client);
-}
-
-/**
- * Legacy helper: window in seconds. Increments via checkUserRateLimit.
- */
-export async function checkRateLimit(
-  key: string,
-  window: number,
-  max: number
-): Promise<RateLimitResult> {
-  const result = await checkUserRateLimit(key, {
-    windowMs: Math.max(1, window) * 1000,
-    max,
-    prefix: 'rate',
-  });
-
-  return {
-    success: result.allowed,
-    remaining: result.remaining,
-    reset: result.resetAt,
-    total: result.limit,
-  };
 }
 
 function getClientKey(request: NextRequest, customKey?: string): string {

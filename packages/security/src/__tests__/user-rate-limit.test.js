@@ -14,6 +14,7 @@ const {
   checkUserRateLimit,
   resetUserRateLimitMemoryForTests,
   setUserRateLimitRedisForTests,
+  setUserRateLimitUpstashForTests,
 } = require('../user-rate-limit-runtime.js');
 
 describe('checkUserRateLimit (memory backend)', () => {
@@ -137,6 +138,7 @@ describe('checkUserRateLimit (redis mock backend)', () => {
 
   afterEach(() => {
     setUserRateLimitRedisForTests(null);
+    setUserRateLimitUpstashForTests(undefined);
     resetUserRateLimitMemoryForTests();
   });
 
@@ -165,5 +167,20 @@ describe('checkUserRateLimit (redis mock backend)', () => {
     expect(b.allowed).toBe(true);
     expect(c.allowed).toBe(false);
     expect(c.count).toBe(3);
+  });
+
+  test('uses the official Upstash SDK eval contract', async () => {
+    setUserRateLimitRedisForTests(false);
+    const evalMock = jest.fn().mockResolvedValue([1, 3, 60, 1]);
+    setUserRateLimitUpstashForTests({ eval: evalMock });
+
+    const result = await checkUserRateLimit('user-upstash', {
+      windowMs: 60_000,
+      max: 4,
+      prefix: 'agent',
+    });
+
+    expect(evalMock).toHaveBeenCalledWith(expect.any(String), ['agent:user-upstash'], ['60', '4']);
+    expect(result).toMatchObject({ allowed: true, count: 1, remaining: 3, backend: 'redis' });
   });
 });
