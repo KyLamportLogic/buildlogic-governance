@@ -75,9 +75,71 @@ jobs:
         if: steps.classify.outputs.mode == 'ui'
         run: |
           URLS=$(node -e "const{classifyA11yConfig}=require('./.governance/specs/accessibility-enforcement/scripts/a11y-eval.js');const fs=require('fs');const c=classifyA11yConfig(fs.readFileSync('${{ inputs.config-path }}','utf8'));process.stdout.write((c.config.urls||[]).join(' '))")
+          CHROME_BIN=""
+          for candidate in google-chrome google-chrome-stable chromium chromium-browser /opt/google/chrome/chrome "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"; do
+            if command -v "$candidate" >/dev/null 2>&1; then
+              CHROME_BIN=$(command -v "$candidate")
+              break
+            elif [ -x "$candidate" ]; then
+              CHROME_BIN="$candidate"
+              break
+            fi
+          done
+          CHROME_VER=""
+          if [ -n "$CHROME_BIN" ]; then
+            CHROME_VER=$("$CHROME_BIN" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 || true)
+          fi
+          CHROMEDRIVER_BIN=""
+          if [ -n "$CHROME_VER" ]; then
+            for cand in "${CHROMEWEBDRIVER:+$CHROMEWEBDRIVER/chromedriver}" "$(command -v chromedriver 2>/dev/null || true)"; do
+              [ -n "$cand" ] && [ -f "$cand" ] && [ -x "$cand" ] || continue
+              DRV_VER=$("$cand" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 || true)
+              if [ "$DRV_VER" = "$CHROME_VER" ]; then
+                CHROMEDRIVER_BIN="$cand"
+                break
+              fi
+            done
+            if [ -z "$CHROMEDRIVER_BIN" ]; then
+              for drv_ver in "$CHROME_VER" "${CHROME_VER%.*}" "${CHROME_VER%%.*}"; do
+                [ -n "$drv_ver" ] || continue
+                CAND=$(npx --yes @puppeteer/browsers@2.13.2 install "chromedriver@${drv_ver}" --path /tmp/a11y-drivers --format "{{path}}" | tail -n 1 || true)
+                if [ -n "$CAND" ] && [ -f "$CAND" ] && [ -x "$CAND" ]; then
+                  CHROMEDRIVER_BIN="$CAND"
+                  break
+                fi
+              done
+            fi
+            if [ -z "$CHROMEDRIVER_BIN" ]; then
+              CHROME_MAJOR="${CHROME_VER%%.*}"
+              for cand in "${CHROMEWEBDRIVER:+$CHROMEWEBDRIVER/chromedriver}" "$(command -v chromedriver 2>/dev/null || true)"; do
+                [ -n "$cand" ] && [ -f "$cand" ] && [ -x "$cand" ] || continue
+                DRV_VER=$("$cand" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 || true)
+                if [ -n "$DRV_VER" ] && [ "${DRV_VER%%.*}" = "$CHROME_MAJOR" ]; then
+                  CHROMEDRIVER_BIN="$cand"
+                  break
+                fi
+              done
+            fi
+          fi
+          AXE_ARGS=(--tags wcag2a,wcag22a --save axe-url.json)
+          if [ -n "$CHROMEDRIVER_BIN" ]; then
+            DRV_RESOLVED_VER=$("$CHROMEDRIVER_BIN" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 || true)
+            echo "Chrome: ${CHROME_BIN:-unknown} (${CHROME_VER:-unknown}) | ChromeDriver: $CHROMEDRIVER_BIN (${DRV_RESOLVED_VER:-unknown})"
+            AXE_ARGS+=(--chromedriver-path "$CHROMEDRIVER_BIN")
+          else
+            echo "::warning::Could not resolve matching ChromeDriver for Chrome ${CHROME_BIN:-unknown} (${CHROME_VER:-unknown}); falling back to @axe-core/cli bundled chromedriver"
+          fi
+          if [ -n "$CHROME_BIN" ] && ! command -v google-chrome >/dev/null 2>&1; then
+            AXE_ARGS+=(--chrome-path "$CHROME_BIN")
+          fi
           echo "[]" > axe.json
           for u in $URLS; do
-            npx --yes @axe-core/cli@4.10.1 "$u" --tags wcag2a,wcag22a --save axe-url.json || true
+            rm -f axe-url.json
+            npx --yes @axe-core/cli@4.10.1 "$u" "${AXE_ARGS[@]}" || true
+            if [ ! -f axe-url.json ]; then
+              echo "::error::axe-core did not produce axe-url.json for $u"
+              exit 1
+            fi
             node -e "const a=require('./axe.json');const b=require('./axe-url.json');const v=(Array.isArray(b)?b:[b]).flatMap(r=>r.violations||[]);require('fs').writeFileSync('./axe.json',JSON.stringify(a.concat(v)))"
           done
 
