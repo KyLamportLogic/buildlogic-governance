@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@types/jest": "30.0.0",
-    "@types/node": "22.19.13",
+    "@types/node": "26.6.7",
     "jest": "30.5.2",
     "ts-jest": "29.4.12",
     "@typescript/native": "npm:typescript@7.0.2",
