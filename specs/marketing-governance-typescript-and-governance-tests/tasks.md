@@ -81,3 +81,33 @@ spec merged → OD-1/2/3 → T1 → T2 → T3 / T4 / T5 (as classification dicta
 
 ## Changelog
 - 2026-11-27 — Initial draft.
+
+---
+
+## Amendment R1 — T2 result and disposition of T3–T5 (2026-11-28)
+
+> KIRO-AUTHORED SPEC AMENDMENT — HUMAN ADOPTION/MERGE PENDING. Not an owner approval. Drafted 2026-11-28; model ID not exposed. Issue: KyPython/ai-governance#238. Source: KyLamportLogic/buildlogic-governance@d547f24. No completion contract; not gate-verified.
+
+**T2 result (read-only, observed):** all 20 `packages/governance` failures are **environmental**, class TOOLCHAIN under MGT-4.2 (the local developer environment, not the code or the tests).
+
+| Condition (`packages/governance`, 178 tests) | Result |
+| --- | --- |
+| Developer shell on macOS, with `~/.buildlogic/governance-state.json` present | 20 failed, 158 passed |
+| `env -i HOME PATH` (no other variables), and with `CI=true` | 20 failed, 158 passed |
+| `BUILDLOGIC_GOVERNANCE_STATE_PATH=/tmp/blg-nonexistent.json` | 178 passed |
+| `HOME` set to an empty directory | 178 passed |
+| CI (ubuntu), PR #38 and main `d547f24` | 178 passed |
+
+**Mechanism (file evidence):** `src/hardware/state-file.ts:14-19` defaults the state path to `join(homedir(), ".buildlogic")/governance-state.json` unless `BUILDLOGIC_GOVERNANCE_STATE_PATH` is set. `syncGovernanceKillToEnv` (same file, about lines 96–137) sets `AI_ACTION_KILL_SWITCH="true"` when that file has `aiActionKillSwitch: true`. `src/killSwitch.ts:22-24` calls it, and `src/policyEngine.ts:35` then blocks every preflight. The developer machine had such a file (`aiActionKillSwitch: true`, `reason: "emergency"`, `updatedAt: 2026-09-22`). CI has no such file.
+
+**Disposition:**
+- **T2:** complete with this record (MGT-4.1, MGT-4.2). The inventory reconciles to 20; every item has the same class and the same cause. No test was changed (MGT-4.3, MGT-4.8).
+- **T3, T4:** **not needed.** No failure is CODE-WRONG or TEST-WRONG, so MGT-4.4–4.7 and 4.9 have nothing to act on.
+- **T5:** **resolved with no repo change.** The TOOLCHAIN class here is the developer environment, not a compiler or package version: T5's evidence ("the test passes on the repo's pattern toolchain with unchanged assertions") is met in CI, 178/178 on main `d547f24`, so MGT-4.10 is met. If Ky wants the environment cause removed from the tests themselves, that is optional T8 below.
+- **Residual risk:** the tests read the developer's real home directory, so a live kill switch on a developer machine makes them fail and could hide real failures. Optional task T8 below addresses it.
+- **Not changed:** the kill-switch file on the developer machine. Clearing it is Ky's decision; it may also block other local BuildLogic tools.
+
+- [ ] **T8 (optional; owner decides). Make the governance tests independent of the developer's home directory.** (MGT-4.8, MGT-4.10)
+  Set `BUILDLOGIC_GOVERNANCE_STATE_PATH` to a per-run temporary path in the `packages/governance` jest setup, so tests never read `~/.buildlogic`. Keep every existing assertion. Add one test that fails if the default home path is read during tests.
+  Coder: capability `test-synthesis and coding` · Reviewer: capability `independent-verification`, a distinct principal. UNAUTHORIZED until Ky grants it.
+  Evidence: with a kill-switch file present in `HOME`, `pnpm test` in `packages/governance` passes 178 plus the new test; CI unchanged.
