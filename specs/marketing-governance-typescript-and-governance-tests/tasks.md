@@ -102,7 +102,8 @@ spec merged → OD-1/2/3 → T1 → T2 → T3 / T4 / T5 (as classification dicta
 
 **Disposition:**
 - **T2:** complete with this record (MGT-4.1, MGT-4.2). The inventory reconciles to 20; every item has the same class and the same cause. No test was changed (MGT-4.3, MGT-4.8).
-- **T3, T4, T5:** **not needed.** No failure is CODE-WRONG or TEST-WRONG, so MGT-4.4–4.7 and 4.9 have nothing to act on. MGT-4.10 is met in CI (178/178 on main `d547f24`).
+- **T3, T4:** **not needed.** No failure is CODE-WRONG or TEST-WRONG, so MGT-4.4–4.7 and 4.9 have nothing to act on.
+- **T5:** **resolved with no repo change.** The TOOLCHAIN class here is the developer environment, not a compiler or package version: T5's evidence ("the test passes on the repo's pattern toolchain with unchanged assertions") is met in CI, 178/178 on main `d547f24`, so MGT-4.10 is met. If Ky wants the environment cause removed from the tests themselves, that is optional T8 below.
 - **Residual risk:** the tests read the developer's real home directory, so a live kill switch on a developer machine makes them fail and could hide real failures. Optional task T8 below addresses it.
 - **Not changed:** the kill-switch file on the developer machine. Clearing it is Ky's decision; it may also block other local BuildLogic tools.
 
